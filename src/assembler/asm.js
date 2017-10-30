@@ -281,30 +281,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
 
                                     code.push(opCode, p1.value, p2.value);
                                     break;
-                                case 'INC':
-                                    p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg('INC', match[op2_group]);
-
-                                    if (p1.type === "register")
-                                        opCode = opcodes.INC_REG;
-                                    else
-                                        throw "INC does not support this operand";
-
-                                    code.push(opCode, p1.value);
-
-                                    break;
-                                case 'DEC':
-                                    p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg('DEC', match[op2_group]);
-
-                                    if (p1.type === "register")
-                                        opCode = opcodes.DEC_REG;
-                                    else
-                                        throw "DEC does not support this operand";
-
-                                    code.push(opCode, p1.value);
-
-                                    break;
                                 case 'CMP':
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
