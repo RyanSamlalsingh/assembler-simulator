@@ -253,19 +253,19 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === "register" && p2.type === "regaddress")
-                                        opCode = opcodes.MOV_REGADDRESS_TO_REG;
-                                    else if (p1.type === "register" && p2.type === "address")
-                                        opCode = opcodes.MOV_ADDRESS_TO_REG;
+                                    if (p1.type === "register" && p2.type === "register")
+                                        opCode = opcodes.LD_REGADDRESS_TO_REG;
+                                    else if (p1.type === "number" && p2.type === "register")
+                                        opCode = opcodes.LD_ADDRESS_TO_REG;
                                     else
                                         throw "LD does not support these operands";
                                     code.push(opCode, p1.value, p2.value);
                                     break;
-                                case 'LDi':
+                                case 'LDI':
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
-                                    if (p1.type === "register" && p2.type === "number")
-                                        opCode = opcodes.MOV_NUMBER_TO_REG;
+                                    if (p1.type === "number" && p2.type === "register")
+                                        opCode = opcodes.LD_NUMBER_TO_REG;
                                     else
                                         throw "LDi does not support these operands";
 
@@ -275,10 +275,10 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === "address" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_ADDRESS;
-                                    else if (p1.type === "regaddress" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_REGADDRESS;
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.SD_REG_TO_ADDRESS;
+                                    else if (p1.type === "register" && p2.type === "register")
+                                        opCode = opcodes.SD_REG_TO_REGADDRESS;
                                     else
                                         throw "SD does not support these operands";
 

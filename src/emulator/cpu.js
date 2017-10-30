@@ -129,52 +129,34 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 switch(instr) {
                     case opcodes.NONE:
                         return false; // Abort step
-                    case opcodes.MOV_REG_TO_REG:
-                        regTo = checkGPR_SP(memory.load(++self.ip));
-                        regFrom = checkGPR_SP(memory.load(++self.ip));
-                        setGPR_SP(regTo,getGPR_SP(regFrom));
-                        self.ip++;
-                        break;
-                    case opcodes.MOV_ADDRESS_TO_REG:
-                        regTo = checkGPR_SP(memory.load(++self.ip));
+                    case opcodes.LD_ADDRESS_TO_REG:
                         memFrom = memory.load(++self.ip);
+                        regTo = checkGPR_SP(memory.load(++self.ip));
                         setGPR_SP(regTo,memory.load(memFrom));
                         self.ip++;
                         break;
-                    case opcodes.MOV_REGADDRESS_TO_REG:
-                        regTo = checkGPR_SP(memory.load(++self.ip));
+                    case opcodes.LD_REGADDRESS_TO_REG:
                         regFrom = memory.load(++self.ip);
+                        regTo = checkGPR_SP(memory.load(++self.ip));
                         setGPR_SP(regTo,memory.load(indirectRegisterAddress(regFrom)));
                         self.ip++;
                         break;
-                    case opcodes.MOV_REG_TO_ADDRESS:
-                        memTo = memory.load(++self.ip);
+                    case opcodes.SD_REG_TO_ADDRESS:
                         regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memTo = memory.load(++self.ip);
                         memory.store(memTo, getGPR_SP(regFrom));
                         self.ip++;
                         break;
-                    case opcodes.MOV_REG_TO_REGADDRESS:
-                        regTo = memory.load(++self.ip);
+                    case opcodes.SD_REG_TO_REGADDRESS:
                         regFrom = checkGPR_SP(memory.load(++self.ip));
+                        regTo = memory.load(++self.ip);
                         memory.store(indirectRegisterAddress(regTo), getGPR_SP(regFrom));
                         self.ip++;
                         break;
-                    case opcodes.MOV_NUMBER_TO_REG:
+                    case opcodes.LD_NUMBER_TO_REG:
+                        number = memory.load(++self.ip);
                         regTo = checkGPR_SP(memory.load(++self.ip));
-                        number = memory.load(++self.ip);
                         setGPR_SP(regTo,number);
-                        self.ip++;
-                        break;
-                    case opcodes.MOV_NUMBER_TO_ADDRESS:
-                        memTo = memory.load(++self.ip);
-                        number = memory.load(++self.ip);
-                        memory.store(memTo, number);
-                        self.ip++;
-                        break;
-                    case opcodes.MOV_NUMBER_TO_REGADDRESS:
-                        regTo = memory.load(++self.ip);
-                        number = memory.load(++self.ip);
-                        memory.store(indirectRegisterAddress(regTo), number);
                         self.ip++;
                         break;
                     case opcodes.ADD_REG_TO_REG:
