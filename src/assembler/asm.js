@@ -47,13 +47,13 @@ app.service('assembler', ['opcodes', function (opcodes) {
             var parseRegister = function (input) {
                 input = input.toUpperCase();
 
-                if (input === 'A') {
+                if (input === 'R1') {
                     return 0;
-                } else if (input === 'B') {
+                } else if (input === 'R2') {
                     return 1;
-                } else if (input === 'C') {
+                } else if (input === 'R3') {
                     return 2;
-                } else if (input === 'D') {
+                } else if (input === 'R4') {
                     return 3;
                 } else if (input === 'SP') {
                     return 4;
@@ -226,6 +226,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     code.push(opCode);
                                     break;
 
+                                /*
                                 case 'MOV':
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
@@ -248,6 +249,42 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.MOV_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "MOV does not support this operands";
+
+                                    code.push(opCode, p1.value, p2.value);
+                                    break;
+                                */
+                                case 'LD': //Can load from memory address or register
+                                    p1 = getValue(match[op1_group]);
+                                    p2 = getValue(match[op2_group]);
+
+                                    if (p1.type === "register" && p2.type === "register")
+                                        opCode = opcodes.LD_REGADDRESS_TO_REG;
+                                    else if (p1.type === "number" && p2.type === "register")
+                                        opCode = opcodes.LD_ADDRESS_TO_REG;
+                                    else
+                                        throw "LD does not support these operands";
+                                    code.push(opCode, p1.value, p2.value);
+                                    break;
+                                case 'LDI':
+                                    p1 = getValue(match[op1_group]);
+                                    p2 = getValue(match[op2_group]);
+                                    if (p1.type === "number" && p2.type === "register")
+                                        opCode = opcodes.LD_NUMBER_TO_REG;
+                                    else
+                                        throw "LDi does not support these operands";
+
+                                    code.push(opCode, p1.value, p2.value);
+                                    break;
+                                case 'SD': //store to address or store to register address
+                                    p1 = getValue(match[op1_group]);
+                                    p2 = getValue(match[op2_group]);
+
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.SD_REG_TO_ADDRESS;
+                                    else if (p1.type === "register" && p2.type === "register")
+                                        opCode = opcodes.SD_REG_TO_REGADDRESS;
+                                    else
+                                        throw "SD does not support these operands";
 
                                     code.push(opCode, p1.value, p2.value);
                                     break;

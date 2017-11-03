@@ -1,0 +1,10 @@
+LDi 6, A
+
+LDi 60, B
+
+LD 6, C
+
+LD A, D
+
+SD A, 0x44
+SD B, 0x55
