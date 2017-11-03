@@ -47,13 +47,13 @@ app.service('assembler', ['opcodes', function (opcodes) {
             var parseRegister = function (input) {
                 input = input.toUpperCase();
 
-                if (input === 'A') {
+                if (input === 'R1') {
                     return 0;
-                } else if (input === 'B') {
+                } else if (input === 'R2') {
                     return 1;
-                } else if (input === 'C') {
+                } else if (input === 'R3') {
                     return 2;
-                } else if (input === 'D') {
+                } else if (input === 'R4') {
                     return 3;
                 } else if (input === 'SP') {
                     return 4;
