@@ -1,0 +1,4 @@
+ldi 4, R1
+ldi 5, R2
+ldi 7, R3
+jmp 2

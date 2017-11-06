@@ -241,108 +241,74 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         checkOperation(getGPR_SP(regTo) - number);
                         self.ip++;
                         break;
-                    case opcodes.JMP_REGADDRESS:
+                    case opcodes.JZ:
                         regTo = checkGPR(memory.load(++self.ip));
-                        jump(self.gpr[regTo]);
+                        number = memory.load(++self.ip);
+
+                        if ((self.gpr[regTo]) === 0) {
+                            jump(number);
+                        } else
+                        {
+                            self.ip ++;
+                        }
                         break;
-                    case opcodes.JMP_ADDRESS:
+                    case opcodes.JMP:
                         number = memory.load(++self.ip);
                         jump(number);
                         break;
-                    case opcodes.JC_REGADDRESS:
+                    case opcodes.JNZ:
                         regTo = checkGPR(memory.load(++self.ip));
-                        if (self.carry) {
-                            jump(self.gpr[regTo]);
-                        } else {
-                            self.ip++;
-                        }
-                        break;
-                    case opcodes.JC_ADDRESS:
                         number = memory.load(++self.ip);
-                        if (self.carry) {
+
+                        if ((self.gpr[regTo]) !== 0) {
                             jump(number);
-                        } else {
-                            self.ip++;
+                        } else
+                        {
+                            self.ip ++;
                         }
                         break;
-                    case opcodes.JNC_REGADDRESS:
+                    case opcodes.JGZ:
                         regTo = checkGPR(memory.load(++self.ip));
-                        if (!self.carry) {
-                            jump(self.gpr[regTo]);
-                        } else {
-                            self.ip++;
-                        }
-                        break;
-                    case opcodes.JNC_ADDRESS:
                         number = memory.load(++self.ip);
-                        if (!self.carry) {
+
+                        if ((self.gpr[regTo]) > 0) {
                             jump(number);
-                        } else {
-                            self.ip++;
+                        } else
+                        {
+                            self.ip ++;
                         }
                         break;
-                    case opcodes.JZ_REGADDRESS:
+                    case opcodes.JGEZ:
                         regTo = checkGPR(memory.load(++self.ip));
-                        if (self.zero) {
-                            jump(self.gpr[regTo]);
-                        } else {
-                            self.ip++;
-                        }
-                        break;
-                    case opcodes.JZ_ADDRESS:
                         number = memory.load(++self.ip);
-                        if (self.zero) {
+
+                        if ((self.gpr[regTo]) >= 0) {
                             jump(number);
-                        } else {
-                            self.ip++;
+                        } else
+                        {
+                            self.ip ++;
                         }
                         break;
-                    case opcodes.JNZ_REGADDRESS:
+                    case opcodes.JLZ:
                         regTo = checkGPR(memory.load(++self.ip));
-                        if (!self.zero) {
-                            jump(self.gpr[regTo]);
-                        } else {
-                            self.ip++;
-                        }
-                        break;
-                    case opcodes.JNZ_ADDRESS:
                         number = memory.load(++self.ip);
-                        if (!self.zero) {
+
+                        if ((self.gpr[regTo]) < 0) {
                             jump(number);
-                        } else {
-                            self.ip++;
+                        } else
+                        {
+                            self.ip ++;
                         }
                         break;
-                    case opcodes.JA_REGADDRESS:
+                    case opcodes.JLEZ:
                         regTo = checkGPR(memory.load(++self.ip));
-                        if (!self.zero && !self.carry) {
-                            jump(self.gpr[regTo]);
-                        } else {
-                            self.ip++;
-                        }
-                        break;
-                    case opcodes.JA_ADDRESS:
                         number = memory.load(++self.ip);
-                        if (!self.zero && !self.carry) {
+
+                        if ((self.gpr[regTo]) <= 0) {
                             jump(number);
-                        } else {
-                            self.ip++;
-                        }
-                        break;
-                    case opcodes.JNA_REGADDRESS: // JNA REG
-                        regTo = checkGPR(memory.load(++self.ip));
-                        if (self.zero || self.carry) {
-                            jump(self.gpr[regTo]);
-                        } else {
-                            self.ip++;
-                        }
-                        break;
-                    case opcodes.JNA_ADDRESS:
-                        number = memory.load(++self.ip);
-                        if (self.zero || self.carry) {
-                            jump(number);
-                        } else {
-                            self.ip++;
+                        } else
+                        {
+                            self.ip ++;
                         }
                         break;
                     case opcodes.PUSH_REG:
