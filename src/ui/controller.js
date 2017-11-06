@@ -16,13 +16,47 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.speed = 4;
     $scope.outputStartIndex = 232;
 
-    $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
+    $scope.code = "";
+
+    $scope.instructionNumbers = "";
+
+    var lineNumsElement = document.getElementById('lineNums');
+    var sourceCodeElements = document.getElementById('sourceCode');
+
+    function select_scroll_1(e) { sourceCodeElements.scrollTop = lineNumsElement.scrollTop; }
+    function select_scroll_2(e) { lineNumsElement.scrollTop = sourceCodeElements.scrollTop; }
+
+    lineNumsElement.addEventListener('scroll', select_scroll_1, false);
+    sourceCodeElements.addEventListener('scroll', select_scroll_2, false);
 
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
         $scope.error = '';
         $scope.selectedLine = -1;
+    };
+
+    $scope.codeChanged = function() {
+        var code = $scope.code;
+        var lineNums = '';
+        var lines = code.split("\n");
+        var j = 1;
+        //Insert these as labels!
+        for(var i = 0; i < lines.length; i++)
+        {
+            if (!(/^ *$/.test(lines[i])))
+            {
+                // It has no kind of whitespace
+                lineNums += j.toString() + "\n";
+                j++;
+            }
+            else
+            {
+               lineNums += "\n";
+
+            }
+        }
+        $scope.instructionNumbers = lineNums;
     };
 
     $scope.executeStep = function () {

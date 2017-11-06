@@ -34,14 +34,27 @@
                         <h4 class="panel-title">Code <small>(<a href="./instruction-set.html" target="_blank" style="color: #337AB7">Instruction Set</a>)</small></h4>
                     </div>
                     <div class="panel-body">
-                        <form role="form">
-                            <textarea id="sourceCode"
-                                      class="form-control source-code"
-                                      style="margin-bottom:5px;"
-                                      rows="35"
-                                      tab-support
-                                      select-line
-                                      ng-model="code"></textarea>
+                        <form role="form" class="form-inline">
+                            <!-- RYAN -->
+                            <div style="min-width: 100%; display: table;">
+                                <textarea
+                                    id="lineNums"
+                                    readonly 
+                                    class="form-control source-code"
+                                    style="vertical-align: top; white-space:pre-wrap; margin-bottom:5px; padding:0; display: table-column; width:7%; resize: none;"
+                                    rows="35"
+                                    select-line
+                                    ng-model="instructionNumbers"></textarea><textarea
+                                    id="sourceCode"
+                                    class="form-control source-code"
+                                    style="margin-bottom:5px; width:100%;resize: none; display: table-column; width:93%; padding:0;"
+                                    rows="35"
+                                    tab-support
+                                    ng-model="code"
+                                    ng-change="codeChanged()"
+                                    ng-trim="false">              
+                                </textarea>
+                            </div>
                             <button type="button" class="btn btn-default" ng-click="assemble()">Assemble</button>
                         </form>
                     </div>

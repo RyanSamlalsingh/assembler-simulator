@@ -184,15 +184,19 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 }
             };
 
+            var labelCounter = 0;
+
             for (var i = 0, l = lines.length; i < l; i++) {
                 try {
                     var match = regex.exec(lines[i]);
                     if (match[1] !== undefined || match[2] !== undefined) {
                         if (match[1] !== undefined) {
-                            addLabel(match[1]);
+                            //addLabel(match[1]);
                         }
 
                         if (match[2] !== undefined) {
+                            addLabel((labelCounter + 1).toString());
+                            labelCounter++;
                             var instr = match[2].toUpperCase();
                             var p1, p2, opCode;
 
