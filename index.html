@@ -78,7 +78,7 @@
                         <h4 class="panel-title">CPU & Memory</h4>
                     </div>
                     <div class="panel-body">
-                        <p class="text-muted">Registers / Flags</p>
+                        <p class="text-muted">Registers</p>
                         <table class="table table-condensed table-striped">
                             <thead>
                                 <tr>
@@ -87,10 +87,6 @@
                                     <th style="text-align:center">R3</th>
                                     <th style="text-align:center">R4</th>
                                     <th style="text-align:center">IP</th>
-                                    <th style="text-align:center">SP</th>
-                                    <th style="text-align:center">Z</th>
-                                    <th style="text-align:center">C</th>
-                                    <th style="text-align:center">F</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,10 +96,6 @@
                                     <td><div style="margin:auto;" ng-class="displayC && 'marker marker-c'"><small>{{ cpu.gpr[2] | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" ng-class="displayD && 'marker marker-d'"><small>{{ cpu.gpr[3] | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" class="marker marker-ip"><small>{{ cpu.ip | number:displayHex }}</small></div></td>
-                                    <td><div style="margin:auto;" class="marker marker-sp"><small>{{ cpu.sp | number:displayHex }}</small></div></td>
-                                    <td><small>{{ cpu.zero | flag }}</small></td>
-                                    <td><small>{{ cpu.carry | flag }}</small></td>
-                                    <td><small>{{ cpu.fault | flag }}</small></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -148,29 +140,31 @@
                         </p>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">Labels</h4>
+                <!--
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Labels</h4>
+                        </div>
+                        <div class="panel-body source-code">
+                            <table class="table table-condensed table-striped codelabels">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Value</th>
+                                </tr>
+                                <tr ng-repeat="(name, value) in labels" class="codelabel">
+                                    <td class="codelabel-name">{{ name }}</td>
+                                    <td class="codelabel-line"><a ng-click="jumpToLine(value)">{{ value | number:displayHex }}</a></td>
+                                    <td class="codelabel-value">{{ memory.data[value] | number:displayHex }}
+                                        <span ng-if="memory.data[value] >= 32 && memory.data[value] <= 126">
+                                            ('{{ getChar(memory.data[value]) }}')
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    <div class="panel-body source-code">
-                        <table class="table table-condensed table-striped codelabels">
-                            <tr>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Value</th>
-                            </tr>
-                            <tr ng-repeat="(name, value) in labels" class="codelabel">
-                                <td class="codelabel-name">{{ name }}</td>
-                                <td class="codelabel-line"><a ng-click="jumpToLine(value)">{{ value | number:displayHex }}</a></td>
-                                <td class="codelabel-value">{{ memory.data[value] | number:displayHex }}
-                                    <span ng-if="memory.data[value] >= 32 && memory.data[value] <= 126">
-                                        ('{{ getChar(memory.data[value]) }}')
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+                -->
             </div>
         </div>
         <hr style="margin-top:10px;margin-bottom:10px;"/>
