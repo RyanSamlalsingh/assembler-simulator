@@ -67,13 +67,13 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 var m = 0;
                 var base = 0;
 
-                if (input[0] === 'A') {
+                if (input[0] === 'R1') {
                     base = 0;
-                } else if (input[0] === 'B') {
+                } else if (input[0] === 'R2') {
                     base = 1;
-                } else if (input[0] === 'C') {
+                } else if (input[0] === 'R3') {
                     base = 2;
-                } else if (input[0] === 'D') {
+                } else if (input[0] === 'R4') {
                     base = 3;
                 } else if (input.slice(0, 2) === "SP") {
                     base = 4;
@@ -172,7 +172,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 if (upperLabel in normalizedLabels)
                     throw "Duplicate label: " + label;
 
-                if (upperLabel === "A" || upperLabel === "B" || upperLabel === "C" || upperLabel === "D")
+                if (upperLabel === "R1" || upperLabel === "R2" || upperLabel === "R3" || upperLabel === "R4")
                     throw "Label contains keyword: " + upperLabel;
 
                 labels[label] = code.length;
@@ -225,34 +225,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     opCode = opcodes.NONE;
                                     code.push(opCode);
                                     break;
-
-                                /*
-                                case 'MOV':
-                                    p1 = getValue(match[op1_group]);
-                                    p2 = getValue(match[op2_group]);
-
-                                    if (p1.type === "register" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_REG;
-                                    else if (p1.type === "register" && p2.type === "address")
-                                        opCode = opcodes.MOV_ADDRESS_TO_REG;
-                                    else if (p1.type === "register" && p2.type === "regaddress")
-                                        opCode = opcodes.MOV_REGADDRESS_TO_REG;
-                                    else if (p1.type === "address" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_ADDRESS;
-                                    else if (p1.type === "regaddress" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_REGADDRESS;
-                                    else if (p1.type === "register" && p2.type === "number")
-                                        opCode = opcodes.MOV_NUMBER_TO_REG;
-                                    else if (p1.type === "address" && p2.type === "number")
-                                        opCode = opcodes.MOV_NUMBER_TO_ADDRESS;
-                                    else if (p1.type === "regaddress" && p2.type === "number")
-                                        opCode = opcodes.MOV_NUMBER_TO_REGADDRESS;
-                                    else
-                                        throw "MOV does not support this operands";
-
-                                    code.push(opCode, p1.value, p2.value);
-                                    break;
-                                */
                                 case 'LD': //Can load from memory address or register
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
@@ -322,121 +294,82 @@ app.service('assembler', ['opcodes', function (opcodes) {
 
                                     code.push(opCode, p1.value, p2.value);
                                     break;
-                                case 'CMP':
-                                    p1 = getValue(match[op1_group]);
-                                    p2 = getValue(match[op2_group]);
-
-                                    if (p1.type === "register" && p2.type === "register")
-                                        opCode = opcodes.CMP_REG_WITH_REG;
-                                    else if (p1.type === "register" && p2.type === "regaddress")
-                                        opCode = opcodes.CMP_REGADDRESS_WITH_REG;
-                                    else if (p1.type === "register" && p2.type === "address")
-                                        opCode = opcodes.CMP_ADDRESS_WITH_REG;
-                                    else if (p1.type === "register" && p2.type === "number")
-                                        opCode = opcodes.CMP_NUMBER_WITH_REG;
-                                    else
-                                        throw "CMP does not support this operands";
-
-                                    code.push(opCode, p1.value, p2.value);
-                                    break;
                                 case 'JMP':
                                     p1 = getValue(match[op1_group]);
                                     checkNoExtraArg('JMP', match[op2_group]);
 
-                                    if (p1.type === "register")
-                                        opCode = opcodes.JMP_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.JMP_ADDRESS;
+                                    if (p1.type === "number")
+                                        opCode = opcodes.JMP;
                                     else
                                         throw "JMP does not support this operands";
-
-                                    code.push(opCode, p1.value);
-                                    break;
-                                case 'JC':
-                                case 'JB':
-                                case 'JNAE':
-                                    p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
-
-                                    if (p1.type === "register")
-                                        opCode = opcodes.JC_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.JC_ADDRESS;
-                                    else
-                                        throw instr + " does not support this operand";
-
-                                    code.push(opCode, p1.value);
-                                    break;
-                                case 'JNC':
-                                case 'JNB':
-                                case 'JAE':
-                                    p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
-
-                                    if (p1.type === "register")
-                                        opCode = opcodes.JNC_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.JNC_ADDRESS;
-                                    else
-                                        throw instr + "does not support this operand";
-
-                                    code.push(opCode, p1.value);
+                                    
+                                    code.push(opCode, labels[p1.value]);
                                     break;
                                 case 'JZ':
-                                case 'JE':
                                     p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
+                                    p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === "register")
-                                        opCode = opcodes.JZ_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.JZ_ADDRESS;
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.JZ;
                                     else
-                                        throw instr + " does not support this operand";
-
-                                    code.push(opCode, p1.value);
+                                        throw "Jay-Z does not support this operands";
+                                    
+                                    code.push(opCode, p1.value, labels[p2.value]);
                                     break;
                                 case 'JNZ':
-                                case 'JNE':
                                     p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
+                                    p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === "register")
-                                        opCode = opcodes.JNZ_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.JNZ_ADDRESS;
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.JNZ;
                                     else
-                                        throw instr + " does not support this operand";
-
-                                    code.push(opCode, p1.value);
+                                        throw "Jay-Z does not support this operands";
+                                    
+                                    code.push(opCode, p1.value, labels[p2.value]);
                                     break;
-                                case 'JA':
-                                case 'JNBE':
+                                case 'JGZ':
                                     p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
+                                    p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === "register")
-                                        opCode = opcodes.JA_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.JA_ADDRESS;
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.JGZ;
                                     else
-                                        throw instr + " does not support this operand";
-
-                                    code.push(opCode, p1.value);
+                                        throw "Jay-Z does not support this operands";
+                                    
+                                    code.push(opCode, p1.value, labels[p2.value]);
                                     break;
-                                case 'JNA':
-                                case 'JBE':
+                                case 'JGEZ':
                                     p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
+                                    p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === "register")
-                                        opCode = opcodes.JNA_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.JNA_ADDRESS;
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.JGEZ;
                                     else
-                                        throw instr + " does not support this operand";
+                                        throw "Jay-Z does not support this operands";
+                                    
+                                    code.push(opCode, p1.value, labels[p2.value]);
+                                    break;
+                                case 'JLZ':
+                                    p1 = getValue(match[op1_group]);
+                                    p2 = getValue(match[op2_group]);
 
-                                    code.push(opCode, p1.value);
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.JLZ;
+                                    else
+                                        throw "Jay-Z does not support this operands";
+                                    
+                                    code.push(opCode, p1.value, labels[p2.value]);
+                                    break;
+                                case 'JLEZ':
+                                    p1 = getValue(match[op1_group]);
+                                    p2 = getValue(match[op2_group]);
+
+                                    if (p1.type === "register" && p2.type === "number")
+                                        opCode = opcodes.JLEZ;
+                                    else
+                                        throw "Jay-Z does not support this operands";
+                                    
+                                    code.push(opCode, p1.value, labels[p2.value]);
                                     break;
                                 case 'PUSH':
                                     p1 = getValue(match[op1_group]);
