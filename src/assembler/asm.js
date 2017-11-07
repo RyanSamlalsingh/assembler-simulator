@@ -225,34 +225,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     opCode = opcodes.NONE;
                                     code.push(opCode);
                                     break;
-
-                                /*
-                                case 'MOV':
-                                    p1 = getValue(match[op1_group]);
-                                    p2 = getValue(match[op2_group]);
-
-                                    if (p1.type === "register" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_REG;
-                                    else if (p1.type === "register" && p2.type === "address")
-                                        opCode = opcodes.MOV_ADDRESS_TO_REG;
-                                    else if (p1.type === "register" && p2.type === "regaddress")
-                                        opCode = opcodes.MOV_REGADDRESS_TO_REG;
-                                    else if (p1.type === "address" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_ADDRESS;
-                                    else if (p1.type === "regaddress" && p2.type === "register")
-                                        opCode = opcodes.MOV_REG_TO_REGADDRESS;
-                                    else if (p1.type === "register" && p2.type === "number")
-                                        opCode = opcodes.MOV_NUMBER_TO_REG;
-                                    else if (p1.type === "address" && p2.type === "number")
-                                        opCode = opcodes.MOV_NUMBER_TO_ADDRESS;
-                                    else if (p1.type === "regaddress" && p2.type === "number")
-                                        opCode = opcodes.MOV_NUMBER_TO_REGADDRESS;
-                                    else
-                                        throw "MOV does not support this operands";
-
-                                    code.push(opCode, p1.value, p2.value);
-                                    break;
-                                */
                                 case 'LD': //Can load from memory address or register
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
@@ -438,55 +410,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
 
                                     code.push(opCode, p1.value);
                                     break;
-                                case 'PUSH':
-                                    p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
-
-                                    if (p1.type === "register")
-                                        opCode = opcodes.PUSH_REG;
-                                    else if (p1.type === "regaddress")
-                                        opCode = opcodes.PUSH_REGADDRESS;
-                                    else if (p1.type === "address")
-                                        opCode = opcodes.PUSH_ADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.PUSH_NUMBER;
-                                    else
-                                        throw "PUSH does not support this operand";
-
-                                    code.push(opCode, p1.value);
-                                    break;
-                                case 'POP':
-                                    p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
-
-                                    if (p1.type === "register")
-                                        opCode = opcodes.POP_REG;
-                                    else
-                                        throw "PUSH does not support this operand";
-
-                                    code.push(opCode, p1.value);
-                                    break;
-                                case 'CALL':
-                                    p1 = getValue(match[op1_group]);
-                                    checkNoExtraArg(instr, match[op2_group]);
-
-                                    if (p1.type === "register")
-                                        opCode = opcodes.CALL_REGADDRESS;
-                                    else if (p1.type === "number")
-                                        opCode = opcodes.CALL_ADDRESS;
-                                    else
-                                        throw "CALL does not support this operand";
-
-                                    code.push(opCode, p1.value);
-                                    break;
-                                case 'RET':
-                                    checkNoExtraArg(instr, match[op1_group]);
-
-                                    opCode = opcodes.RET;
-
-                                    code.push(opCode);
-                                    break;
-
                                 case 'MUL':
                                     p1 = getValue(match[op1_group]);
                                     checkNoExtraArg(instr, match[op2_group]);
